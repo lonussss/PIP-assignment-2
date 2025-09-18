@@ -26,9 +26,8 @@ flowchart TD
     C --> D[Data Transformers: Normalize + Enrich]
     D --> E[Export via JSON + CSV]
     E --> F[Data Folder for Storage]
-
+```
 --- 
-
 ## Setup and Deployment Instructions
 
 ### 1. Clone Repository
