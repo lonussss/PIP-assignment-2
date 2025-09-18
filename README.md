@@ -24,5 +24,26 @@ flowchart TD
     A[NYU Events Website] --> B[Selenium Scraper]
     B --> C[Validators.py: Data Quality Checks]
     C --> D[Data Transformers: Normalize + Enrich]
-    D --> E[Exports: JSON + CSV]
+    D --> E[Export via JSON + CSV]
     E --> F[Data Folder for Storage]
+
+--- 
+
+## Setup and Deployment Instructions
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/<your-username>/PIP-assignment-2.git
+cd PIP-assignment-2
+
+### 2. Create Virtual Environment
+
+### 3. Install Dependencies 
+pip install -r requirements.txt
+
+### 4. Run Scraper
+python3 src/main.py
+
+### 5.Output Files
+
+After running you'll find the raw data json file, along with transformed version of the data in both json and csv, all found within the data folder
