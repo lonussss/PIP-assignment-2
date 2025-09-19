@@ -34,15 +34,17 @@ flowchart TD
 ```bash
 git clone https://github.com/<your-username>/PIP-assignment-2.git
 cd PIP-assignment-2
-
+```
 ### 2. Create Virtual Environment
 
 ### 3. Install Dependencies 
+```bash
 pip install -r requirements.txt
-
+```
 ### 4. Run Scraper
+```bash
 python3 src/main.py
-
+```
 ### 5.Output Files
 
 After running you'll find the raw data json file, along with transformed version of the data in both json and csv, all found within the data folder
