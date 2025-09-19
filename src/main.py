@@ -15,19 +15,20 @@ URL = "https://events.nyu.edu"                  #nyu events page
 def scrape_events():
     # Set up headless Chrome
     chrome_options = Options()
-    chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--headless=new")           #Runs chrome without a visible window
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
 
+    # Launch Chrome with webdriver_manager
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     driver.get(URL)
 
-    # Wait until events are present
+    # Wait until events elements load
     wait = WebDriverWait(driver, 15)
     event_blocks = wait.until(
         EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div.lw_cal_event"))
     )
-
+    #Parse Events
     events = []
     for e in event_blocks:
         # Title + URL
@@ -43,6 +44,7 @@ def scrape_events():
         loc_el = e.find_elements(By.TAG_NAME, "p")
         location = loc_el[0].text.strip() if loc_el else "N/A"
 
+        #Store events in key-value pairs
         events.append({
             "title": title,
             "date_time": date_time,
@@ -53,6 +55,7 @@ def scrape_events():
     driver.quit()
     return events
 
+#retry wrapper
 def scrape_with_retries(max_retries=3):
     """Retry scraping a few times before failing."""
     for attempt in range(1, max_retries + 1):
@@ -68,6 +71,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
 from validators import validate_events
 
+#scrape, validate then export
 if __name__ == "__main__":
     data = scrape_events()
 
@@ -79,7 +83,7 @@ if __name__ == "__main__":
     else:
         print("✅ All events passed validation.")
 
-    # Save only if valid
+    # Save raw data into data folder as a JSON
     from pathlib import Path
     project_root = Path.cwd()
     data_folder = project_root / "data"
@@ -96,14 +100,14 @@ from data_transformers import transform_events, export_to_csv_json
 if __name__ == "__main__":
     raw_data = scrape_with_retries(max_retries=3)
 
-    # Validate
+    # Validate raw data
     errors = validate_events(raw_data)
     if errors:
         print("⚠️ Validation issues found, some events skipped.")
     
-    # Transform
+    # Transform data by normalizing the date and time, and locations
     transformed = transform_events(raw_data)
 
-    # Export
+    # Export into another JSON and also a CSV variant
     json_path, csv_path = export_to_csv_json(transformed, output_folder="data")
     print(f"✅ Transformed & saved to:\n- {json_path}\n- {csv_path}")
